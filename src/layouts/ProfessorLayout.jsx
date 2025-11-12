@@ -1,83 +1,115 @@
-import { Outlet, Link, useNavigate } from "react-router-dom";
-import useAuthStore from "../store/useAuthStore";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import useAuthStore from "@/store/useAuthStore";
+import {
+  BookOpen,
+  Layers,
+  LogOut,
+  Menu,
+  X,
+  Cpu,
+  ClipboardCheck,
+} from "lucide-react";
+import { useState } from "react";
 
 export default function ProfessorLayout() {
-  const { user, logout } = useAuthStore();
+  const { logout, user } = useAuthStore();
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
 
+  const navItem =
+    "flex items-center gap-2 px-3 py-2 rounded transition-all duration-200";
+  const active =
+    "bg-gradient-to-r from-fuchsia-700/20 to-blue-700/20 text-purple-400 border-l-4 border-purple-500";
+  const inactive = "hover:bg-gray-800 text-gray-400";
+
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
-      {/* Navbar */}
-      <nav className="bg-white shadow dark:bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link
-                to="/professor"
-                className="text-xl font-bold text-blue-600 dark:text-blue-400"
-              >
-                QuantumTec — Profesor
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-700 dark:text-gray-200 hidden md:inline">
-                {user?.name}
-              </span>
-              <button
-                onClick={handleLogout}
-                className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 font-medium"
-              >
-                Cerrar sesión
-              </button>
-            </div>
-          </div>
+    <div className="min-h-screen flex bg-[#0c0c0d] text-gray-300">
+      {/* Sidebar */}
+      <aside
+        className={`${
+          open ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        } fixed md:static inset-y-0 left-0 z-40 w-64 bg-[#111114] border-r border-gray-800 flex flex-col transition-transform duration-200`}
+      >
+        {/* Header */}
+        <div className="p-4 border-b border-gray-800 text-center">
+          <h1 className="text-lg font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
+            QuantumTec — Profesor
+          </h1>
+          <p className="text-xs text-gray-500 mt-1">{user?.name}</p>
         </div>
-      </nav>
 
-      {/* Sidebar + Contenido */}
-      <div className="flex flex-1">
-        {/* Sidebar */}
-        <aside className="w-64 bg-white dark:bg-gray-800 shadow h-full">
-          <nav className="p-4">
-            <ul className="space-y-2">
-              <li>
-                <Link
-                  to="/professor"
-                  className="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  Mis Cursos
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/professor/pending"
-                  className="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  Calificar Exámenes
-                </Link>
-              </li>
-              {/* Agrega más secciones según avances */}
-            </ul>
-          </nav>
-        </aside>
+        {/* Navigation */}
+        <nav className="flex-1 p-4 space-y-2">
+          <NavLink
+            to="/professor"
+            end
+            className={({ isActive }) =>
+              `${navItem} ${isActive ? active : inactive}`
+            }
+          >
+            <BookOpen size={16} /> Dashboard
+          </NavLink>
 
-        {/* Contenido principal */}
-        <main className="flex-1 p-6 bg-gray-50 dark:bg-gray-900">
+          <NavLink
+            to="/professor/courses"
+            className={({ isActive }) =>
+              `${navItem} ${isActive ? active : inactive}`
+            }
+          >
+            <Layers size={16} /> Mis Cursos
+          </NavLink>
+
+          <NavLink
+            to="/professor/attempts"
+            className={({ isActive }) =>
+              `${navItem} ${isActive ? active : inactive}`
+            }
+          >
+            <ClipboardCheck size={16} /> Intentos de Alumnos
+          </NavLink>
+
+          <NavLink
+            to="/professor/lab-designer"
+            className={({ isActive }) =>
+              `${navItem} ${isActive ? active : inactive}`
+            }
+          >
+            <Cpu size={16} /> Diseñador Cuántico
+          </NavLink>
+        </nav>
+
+        {/* Logout */}
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 p-4 border-t border-gray-800 hover:bg-gray-900 text-red-400 text-sm font-medium"
+        >
+          <LogOut size={16} /> Cerrar sesión
+        </button>
+      </aside>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-h-screen">
+        {/* Topbar (solo móvil) */}
+        <header className="md:hidden flex items-center justify-between p-4 border-b border-gray-800 bg-[#0c0c0d]">
+          <h2 className="text-white font-semibold">Panel del Profesor</h2>
+          <button
+            onClick={() => setOpen(!open)}
+            className="text-gray-300 hover:text-white transition"
+          >
+            {open ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </header>
+
+        {/* Contenido dinámico */}
+        <main className="flex-1 overflow-y-auto p-6">
           <Outlet />
         </main>
       </div>
-
-      {/* Footer */}
-      <footer className="bg-white dark:bg-gray-800 border-t py-4">
-        <div className="container mx-auto px-4 text-center text-gray-600 dark:text-gray-400">
-          © {new Date().getFullYear()} QuantumTec LMS — Panel del Profesor
-        </div>
-      </footer>
     </div>
   );
 }

@@ -1,25 +1,56 @@
 import { create } from "zustand";
 
-const useAuthStore = create((set) => ({
-  token: localStorage.getItem("token") || null,
-  user: JSON.parse(localStorage.getItem("user")) || null,
+const storageKey = "qt_auth";
 
-  login: (token, user) => {
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
-    set({ token, user });
+export const useAuthStore = create((set, get) => ({
+  user: null,
+  token: null,
+  loading: false,
+
+  init: () => {
+    const raw = localStorage.getItem(storageKey);
+    if (raw) {
+      const { user, token } = JSON.parse(raw);
+      set({ user, token });
+    }
+  },
+
+  login: async (api, payload) => {
+    set({ loading: true });
+    try {
+      // POST /api/auth/login → { token, user }
+      const { data } = await api.post("/auth/login", payload);
+      const { token, user } = data;
+      set({ user, token, loading: false });
+      localStorage.setItem(storageKey, JSON.stringify({ user, token }));
+      return { ok: true };
+    } catch (e) {
+      set({ loading: false });
+      return {
+        ok: false,
+        message: e?.response?.data?.message || "Error de login",
+      };
+    }
+  },
+
+  register: async (api, payload) => {
+    set({ loading: true });
+    try {
+      await api.post("/auth/register", payload);
+      set({ loading: false });
+      return { ok: true };
+    } catch (e) {
+      set({ loading: false });
+      return {
+        ok: false,
+        message: e?.response?.data?.message || "Error de registro",
+      };
+    }
   },
 
   logout: () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    set({ token: null, user: null });
-  },
-
-  isAuthenticated: () => !!localStorage.getItem("token"),
-  hasRole: (role) => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    return user?.role === role;
+    localStorage.removeItem(storageKey);
+    set({ user: null, token: null });
   },
 }));
 

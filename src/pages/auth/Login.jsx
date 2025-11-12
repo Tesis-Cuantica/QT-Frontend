@@ -1,63 +1,73 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import useAuthStore from "../../store/useAuthStore";
-import api from "../../services/api";
+import { useForm } from "react-hook-form";
+import api from "@/services/api";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const login = useAuthStore((state) => state.login);
+  const { register, handleSubmit } = useForm();
+  const { login, user, init, loading } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    try {
-      const res = await api.post("/auth/login", { email, password });
-      login(res.data.token, res.data.user);
-      navigate("/");
-    } catch {
-      setError("Credenciales inválidas");
+  useEffect(() => {
+    init();
+  }, [init]);
+
+  useEffect(() => {
+    if (user?.role === "ADMIN") navigate("/admin", { replace: true });
+    if (user?.role === "PROFESSOR") navigate("/professor", { replace: true });
+    if (user?.role === "STUDENT") navigate("/student", { replace: true });
+  }, [user, navigate]);
+
+  const onSubmit = async (values) => {
+    const res = await login(api, values);
+    if (res.ok) {
+      const from = location.state?.from?.pathname;
+      if (from) return navigate(from, { replace: true });
+      // Redirección por rol
+      const role = useAuthStore.getState().user.role;
+      if (role === "ADMIN") return navigate("/admin", { replace: true });
+      if (role === "PROFESSOR")
+        return navigate("/professor", { replace: true });
+      if (role === "STUDENT") return navigate("/student", { replace: true });
+    } else {
+      alert(res.message || "Error al iniciar sesión");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Iniciar sesión</h2>
-        {error && <div className="text-red-500 mb-4 text-center">{error}</div>}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            placeholder="Correo electrónico"
-            className="w-full p-2 border rounded"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            className="w-full p-2 border rounded"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-          >
-            Iniciar sesión
-          </button>
-        </form>
-        <p className="mt-4 text-center">
-          ¿Nuevo?{" "}
-          <a href="/register" className="text-blue-600">
-            Regístrate
-          </a>
-        </p>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div>
+        <label className="text-sm">Email</label>
+        <input
+          className="mt-1 w-full rounded-lg bg-transparent border border-qt-border p-2"
+          type="email"
+          placeholder="correo@ejemplo.com"
+          {...register("email", { required: true })}
+        />
       </div>
-    </div>
+      <div>
+        <label className="text-sm">Contraseña</label>
+        <input
+          className="mt-1 w-full rounded-lg bg-transparent border border-qt-border p-2"
+          type="password"
+          placeholder="********"
+          {...register("password", { required: true })}
+        />
+      </div>
+      <button
+        disabled={loading}
+        className="w-full rounded-lg bg-qt-primary hover:opacity-90 transition p-2 font-semibold"
+      >
+        {loading ? "Ingresando..." : "Ingresar"}
+      </button>
+      <p className="text-center text-sm text-qt-muted">
+        ¿No tienes cuenta?{" "}
+        <a className="text-qt-accent" href="/register">
+          Regístrate
+        </a>
+      </p>
+    </form>
   );
 }

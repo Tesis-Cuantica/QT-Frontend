@@ -1,108 +1,121 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import useAuthStore from "./store/useAuthStore";
-import { ROLES } from "./utils/roles";
+import { Routes, Route, Navigate } from "react-router-dom";
+import AuthLayout from "@/layouts/AuthLayout";
+import AdminLayout from "@/layouts/AdminLayout";
+import ProfessorLayout from "@/layouts/ProfessorLayout";
+import StudentLayout from "@/layouts/StudentLayout";
 
-// Auth
-import Login from "./pages/auth/Login";
-import Register from "./pages/auth/Register";
+import Login from "@/pages/auth/Login";
+import Register from "@/pages/auth/Register";
 
-// Layouts
-import StudentLayout from "./layouts/StudentLayout";
-import ProfessorLayout from "./layouts/ProfessorLayout";
-import AdminLayout from "./layouts/AdminLayout";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
+import UsersPage from "@/pages/admin/UsersPage";
+import CoursesPage from "@/pages/admin/CoursesPage";
+import AdminReportsPage from "@/pages/admin/AdminReportsPage";
 
-// Admin Pages
-import AdminDashboard from "./pages/admin/Dashboard";
-import AdminUsers from "./pages/admin/Users";
-import AdminCourses from "./pages/admin/Courses";
+import ProfessorDashboard from "@/pages/professor/ProfessorDashboard";
+import CourseModulesPage from "@/pages/professor/CourseModulesPage";
+import ModuleLessonsPage from "@/pages/professor/ModuleLessonsPage";
+import ModuleLabsPage from "@/pages/professor/ModuleLabsPage";
+import ModuleExamsPage from "@/pages/professor/ModuleExamsPage";
+import ExamDetailPage from "@/pages/professor/ExamDetailPage";
+import ModuleAttemptsPage from "@/pages/professor/ModuleAttemptsPage";
+import QuantumLabDesigner from "@/pages/professor/QuantumLabDesigner";
+import ProfessorReportsPage from "@/pages/professor/ProfessorReportsPage";
 
-// Student Pages (temporales)
-import StudentDashboard from "./pages/student/Dashboard";
+import StudentDashboard from "@/pages/student/StudentDashboard";
+import StudentCoursesPage from "@/pages/student/StudentCoursesPage";
+import StudentModulesPage from "@/pages/student/StudentModulesPage";
+import StudentLessonsPage from "@/pages/student/StudentLessonsPage";
+import StudentLabsPage from "@/pages/student/StudentLabsPage";
+import StudentExamsPage from "@/pages/student/StudentExamsPage";
+import StudentExamDetailPage from "@/pages/student/StudentExamDetailPage";
+import StudentAttemptsPage from "@/pages/student/StudentAttemptsPage";
+import StudentReportsPage from "@/pages/student/StudentReportsPage";
+import NotFound from "@/pages/common/NotFound";
 
-// Professor Pages (temporales)
-import ProfessorDashboard from "./pages/professor/Dashboard";
-import CreateCourse from "./pages/professor/CreateCourse";
-import CourseDetail from "./pages/professor/CourseDetail";
-import CreateModule from "./pages/professor/CreateModule";
-import CreateExam from "./pages/professor/CreateExam";
-import PendingGrades from "./pages/professor/PendingGrades";
-import GradeAttempt from "./pages/professor/GradeAttempt";
-// Protege rutas por rol
-const ProtectedRoute = ({ children, allowedRoles }) => {
-  const { user } = useAuthStore();
-  if (!user) return <Navigate to="/login" replace />;
-  if (!allowedRoles.includes(user.role)) return <Navigate to="/" replace />;
-  return children;
-};
-
-// Redirige según rol al entrar a "/"
-const RoleRedirect = () => {
-  const { user } = useAuthStore();
-  if (!user) return <Navigate to="/login" replace />;
-  switch (user.role) {
-    case ROLES.STUDENT:
-      return <Navigate to="/student" replace />;
-    case ROLES.PROFESSOR:
-      return <Navigate to="/professor" replace />;
-    case ROLES.ADMIN:
-      return <Navigate to="/admin" replace />;
-    default:
-      return <Navigate to="/login" replace />;
-  }
-};
+import Protected from "@/components/common/Protected";
+import RoleGuard from "@/components/common/RoleGuard";
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Rutas públicas */}
+    <Routes>
+      <Route element={<AuthLayout />}>
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+      </Route>
 
-        {/* Rutas del ADMIN */}
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute allowedRoles={[ROLES.ADMIN]}>
+      <Route
+        path="/admin/*"
+        element={
+          <Protected>
+            <RoleGuard allow={["ADMIN"]}>
               <AdminLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<AdminDashboard />} />
-          <Route path="users" element={<AdminUsers />} />
-          <Route path="courses" element={<AdminCourses />} />
-        </Route>
+            </RoleGuard>
+          </Protected>
+        }
+      >
+        <Route index element={<AdminDashboard />} />
+        <Route path="users" element={<UsersPage />} />
+        <Route path="courses" element={<CoursesPage />} />
+        <Route path="reports" element={<AdminReportsPage />} />
+      </Route>
 
-        {/* Rutas del PROFESSOR (temporal) */}
-        <Route path="/professor" element={<ProfessorLayout />}>
-          <Route index element={<ProfessorDashboard />} />
-          <Route path="courses/new" element={<CreateCourse />} />
-          <Route path="courses/:id" element={<CourseDetail />} />
-          <Route path="courses/:id/edit" element={<CreateCourse />} />
-          <Route path="courses/:id/modules/new" element={<CreateModule />} />
-          <Route
-            path="courses/:id/modules/:moduleId/exams/new"
-            element={<CreateExam />}
-          />
-          <Route path="pending" element={<PendingGrades />} />
-          <Route path="grade/:id" element={<GradeAttempt />} />
-        </Route>
-
-        {/* Rutas del STUDENT (temporal) */}
+      <Route
+        path="/professor/*"
+        element={
+          <Protected>
+            <RoleGuard allow={["PROFESSOR"]}>
+              <ProfessorLayout />
+            </RoleGuard>
+          </Protected>
+        }
+      >
+        <Route index element={<ProfessorReportsPage />} />
+        <Route path="courses" element={<ProfessorDashboard />} />
         <Route
-          path="/student"
-          element={
-            <ProtectedRoute allowedRoles={[ROLES.STUDENT]}>
-              <StudentLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<StudentDashboard />} />
-        </Route>
+          path="courses/:courseId/modules"
+          element={<CourseModulesPage />}
+        />
+        <Route
+          path="modules/:moduleId/lessons"
+          element={<ModuleLessonsPage />}
+        />
+        <Route path="modules/:moduleId/labs" element={<ModuleLabsPage />} />
+        <Route path="modules/:moduleId/exams" element={<ModuleExamsPage />} />
+        <Route path="exams/:examId" element={<ExamDetailPage />} />
+        <Route path="attempts" element={<ModuleAttemptsPage />} />
+        <Route path="lab-designer" element={<QuantumLabDesigner />} />
+      </Route>
 
-        {/* Redirección raíz */}
-        <Route path="/" element={<RoleRedirect />} />
-      </Routes>
-    </BrowserRouter>
+      <Route
+        path="/student/*"
+        element={
+          <Protected>
+            <RoleGuard allow={["STUDENT"]}>
+              <StudentLayout />
+            </RoleGuard>
+          </Protected>
+        }
+      >
+        <Route index element={<StudentDashboard />} />
+        <Route path="courses" element={<StudentCoursesPage />} />
+        <Route
+          path="courses/:courseId/modules"
+          element={<StudentModulesPage />}
+        />
+        <Route
+          path="modules/:moduleId/lessons"
+          element={<StudentLessonsPage />}
+        />
+        <Route path="modules/:moduleId/labs" element={<StudentLabsPage />} />
+        <Route path="modules/:moduleId/exams" element={<StudentExamsPage />} />
+        <Route path="exams/:examId" element={<StudentExamDetailPage />} />
+        <Route path="attempts" element={<StudentAttemptsPage />} />
+        <Route path="reports" element={<StudentReportsPage />} />
+      </Route>
+
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }

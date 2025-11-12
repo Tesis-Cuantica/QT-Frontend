@@ -1,70 +1,63 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import api from "@/services/api";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useNavigate } from "react-router-dom";
-import api from "../../services/api";
 
 export default function Register() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const { register: reg, handleSubmit } = useForm();
+  const { register: registerAction, loading } = useAuthStore();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    try {
-      await api.post("/auth/register", { name, email, password });
+  const onSubmit = async (values) => {
+    const res = await registerAction(api, values);
+    if (res.ok) {
       alert("Registro exitoso. Ahora inicia sesión.");
       navigate("/login");
-    } catch {
-      setError("Error al registrarse. El correo ya podría estar en uso.");
+    } else {
+      alert(res.message || "Error al registrar");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Crear cuenta</h2>
-        {error && <div className="text-red-500 mb-4 text-center">{error}</div>}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Nombre completo"
-            className="w-full p-2 border rounded"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-          <input
-            type="email"
-            placeholder="Correo electrónico"
-            className="w-full p-2 border rounded"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            className="w-full p-2 border rounded"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button
-            type="submit"
-            className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
-          >
-            Registrarse
-          </button>
-        </form>
-        <p className="mt-4 text-center">
-          ¿Ya tienes cuenta?{" "}
-          <a href="/login" className="text-blue-600">
-            Inicia sesión
-          </a>
-        </p>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div>
+        <label className="text-sm">Nombre</label>
+        <input
+          className="mt-1 w-full rounded-lg bg-transparent border border-qt-border p-2"
+          placeholder="Tu nombre"
+          {...reg("name", { required: true })}
+        />
       </div>
-    </div>
+      <div>
+        <label className="text-sm">Email</label>
+        <input
+          className="mt-1 w-full rounded-lg bg-transparent border border-qt-border p-2"
+          type="email"
+          placeholder="correo@ejemplo.com"
+          {...reg("email", { required: true })}
+        />
+      </div>
+      <div>
+        <label className="text-sm">Contraseña</label>
+        <input
+          className="mt-1 w-full rounded-lg bg-transparent border border-qt-border p-2"
+          type="password"
+          placeholder="********"
+          {...reg("password", { required: true, minLength: 6 })}
+        />
+      </div>
+      <button
+        disabled={loading}
+        className="w-full rounded-lg bg-qt-primary hover:opacity-90 transition p-2 font-semibold"
+      >
+        {loading ? "Creando cuenta..." : "Crear cuenta"}
+      </button>
+      <p className="text-center text-sm text-qt-muted">
+        ¿Ya tienes cuenta?{" "}
+        <a className="text-qt-accent" href="/login">
+          Inicia sesión
+        </a>
+      </p>
+    </form>
   );
 }
