@@ -21,6 +21,7 @@ export default function ModuleAttemptsPage() {
 
   const fetchAttempts = async () => {
     try {
+      setLoading(true);
       const res = await api.get("/attempts");
       setAttempts(res.data);
     } catch (err) {
@@ -32,6 +33,7 @@ export default function ModuleAttemptsPage() {
 
   const fetchAttemptDetail = async (id) => {
     try {
+      setLoading(true);
       const res = await api.get(`/attempts/${id}`);
       setSelected(res.data);
       setForm({
@@ -40,6 +42,8 @@ export default function ModuleAttemptsPage() {
       });
     } catch (err) {
       console.error("Error al obtener intento:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -65,175 +69,210 @@ export default function ModuleAttemptsPage() {
   };
 
   useEffect(() => {
-    fetchAttempts();
-  }, []);
+    if (!selected) {
+      fetchAttempts();
+    }
+  }, [selected]);
 
-  if (loading)
+  if (loading && !selected)
     return (
-      <div className="p-6 text-center text-gray-400 flex justify-center">
-        <Loader2 className="animate-spin" size={24} /> Cargando intentos...
+      <div className="p-6 text-center text-zinc-400 flex justify-center items-center gap-2">
+        <Loader2 className="animate-spin" size={20} /> Cargando intentos...
       </div>
     );
 
   if (selected)
     return (
-      <div className="p-6 space-y-6">
+      <div className="space-y-6">
         <button
           onClick={() => setSelected(null)}
-          className="flex items-center gap-2 text-gray-400 hover:text-white transition"
+          className="flex items-center gap-2 text-zinc-400 hover:text-zinc-100 transition-colors"
         >
-          <ArrowLeft size={18} /> Volver
+          <ArrowLeft size={18} /> Volver a la lista
         </button>
 
         <h1 className="text-2xl font-bold text-purple-400">
           Calificar intento #{selected.id}
         </h1>
 
-        <div className="bg-[#111114] border border-gray-800 rounded-xl p-5 space-y-3">
-          <p className="text-gray-300">
+        <div className="bg-[#111114] border border-zinc-800 rounded-lg p-5 space-y-3">
+          <p className="text-zinc-100">
             <strong>Estudiante:</strong> {selected.student?.name}
           </p>
-          <p className="text-gray-300">
+          <p className="text-zinc-100">
             <strong>Examen:</strong> {selected.exam?.title}
           </p>
-          <p className="text-gray-400 text-sm">
+          <p className="text-zinc-400 text-sm">
             <strong>Estado actual:</strong>{" "}
             <span
-              className={`px-2 py-1 rounded text-xs ${
+              className={`px-2 py-0.5 rounded-full text-xs font-medium ${
                 selected.status === "SUBMITTED"
-                  ? "bg-yellow-600/30 text-yellow-400"
+                  ? "bg-yellow-500/20 text-yellow-300"
                   : selected.status === "GRADED"
-                  ? "bg-green-600/30 text-green-400"
-                  : "bg-gray-700/50 text-gray-400"
+                  ? "bg-green-500/20 text-green-300"
+                  : "bg-zinc-700/50 text-zinc-300"
               }`}
             >
               {selected.status}
             </span>
           </p>
-          <p className="text-gray-500 text-sm">
+          <p className="text-zinc-500 text-sm">
             <strong>Enviado:</strong>{" "}
             {new Date(selected.submittedAt).toLocaleString()}
           </p>
         </div>
 
-        <form
-          onSubmit={handleGrade}
-          className="bg-[#111114] border border-gray-800 rounded-xl p-6 space-y-4"
-        >
-          <div>
-            <label className="text-sm text-gray-400">Puntaje</label>
-            <input
-              type="number"
-              name="score"
-              value={form.score}
-              onChange={(e) => setForm({ ...form, score: e.target.value })}
-              className="w-full mt-1 p-2 bg-gray-900 border border-gray-700 rounded text-gray-100"
-              placeholder="Ej: 85"
-            />
+        {loading ? (
+          <div className="p-6 text-center text-zinc-400 flex justify-center items-center gap-2">
+            <Loader2 className="animate-spin" size={20} /> Cargando detalle...
           </div>
-          <div>
-            <label className="text-sm text-gray-400">Retroalimentación</label>
-            <textarea
-              name="feedback"
-              value={form.feedback}
-              onChange={(e) => setForm({ ...form, feedback: e.target.value })}
-              className="w-full mt-1 p-2 bg-gray-900 border border-gray-700 rounded text-gray-100 min-h-[80px]"
-              placeholder="Comentarios para el estudiante..."
-            />
-          </div>
+        ) : (
+          <form
+            onSubmit={handleGrade}
+            className="bg-[#111114] border border-zinc-800 rounded-lg p-6 space-y-4"
+          >
+            <div>
+              <label className="text-sm font-medium text-zinc-400 mb-2 block">
+                Puntaje
+              </label>
+              <input
+                type="number"
+                name="score"
+                value={form.score}
+                onChange={(e) => setForm({ ...form, score: e.target.value })}
+                className="w-full p-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="Ej: 85"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-zinc-400 mb-2 block">
+                Retroalimentación
+              </label>
+              <textarea
+                name="feedback"
+                value={form.feedback}
+                onChange={(e) => setForm({ ...form, feedback: e.target.value })}
+                className="w-full p-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-100 placeholder-zinc-500 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="Comentarios para el estudiante..."
+              />
+            </div>
 
-          <div className="flex justify-end gap-3">
-            <button
-              type="button"
-              onClick={() => setSelected(null)}
-              className="flex items-center gap-1 bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-gray-300"
-            >
-              <X size={14} /> Cancelar
-            </button>
-            <button
-              type="submit"
-              className="flex items-center gap-1 bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white"
-            >
-              <Save size={14} /> Guardar Calificación
-            </button>
-          </div>
-        </form>
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setSelected(null)}
+                className="flex items-center gap-2 bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-lg text-zinc-100 font-medium transition-colors"
+              >
+                <X size={16} /> Cancelar
+              </button>
+              <button
+                type="submit"
+                className="flex items-center gap-2 bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-white font-medium transition-colors"
+              >
+                <Save size={16} /> Guardar Calificación
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     );
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6">
       <h1 className="text-2xl font-bold text-purple-400">
         Intentos de Exámenes
       </h1>
 
-      {attempts.length === 0 ? (
-        <p className="text-gray-400 text-center">
-          No hay intentos registrados aún.
-        </p>
+      {attempts.length === 0 && !loading ? (
+        <div className="bg-[#111114] border border-zinc-800 rounded-lg p-10 text-center">
+          <p className="text-zinc-400">No hay intentos registrados aún.</p>
+        </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full border border-gray-800 rounded-lg overflow-hidden">
-            <thead className="bg-[#1a1a1d] text-gray-300 text-sm">
+        <div className="overflow-x-auto rounded-lg border border-zinc-800 bg-[#111114]">
+          <table className="w-full min-w-[700px] text-sm text-left text-zinc-400">
+            <thead className="bg-zinc-800/50 text-xs text-zinc-400 uppercase tracking-wider">
               <tr>
-                <th className="p-3 text-left">Estudiante</th>
-                <th className="p-3 text-left">Examen</th>
-                <th className="p-3 text-left">Puntaje</th>
-                <th className="p-3 text-left">Estado</th>
-                <th className="p-3 text-left">Fecha</th>
-                <th className="p-3 text-center">Acciones</th>
+                <th scope="col" className="px-4 py-3 font-medium">
+                  Estudiante
+                </th>
+                <th scope="col" className="px-4 py-3 font-medium">
+                  Examen
+                </th>
+                <th scope="col" className="px-4 py-3 font-medium">
+                  Puntaje
+                </th>
+                <th scope="col" className="px-4 py-3 font-medium">
+                  Estado
+                </th>
+                <th scope="col" className="px-4 py-3 font-medium">
+                  Fecha
+                </th>
+                <th scope="col" className="px-4 py-3 font-medium text-center">
+                  Acciones
+                </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-zinc-800">
               {attempts.map((a) => (
-                <tr
-                  key={a.id}
-                  className="border-t border-gray-800 hover:bg-[#151518]/70 transition"
-                >
-                  <td className="p-3">{a.student?.name}</td>
-                  <td className="p-3">{a.exam?.title}</td>
-                  <td className="p-3 text-gray-300">
+                <tr key={a.id} className="hover:bg-zinc-800/30">
+                  <td className="px-4 py-3 font-medium text-zinc-100">
+                    {a.student?.name}
+                  </td>
+                  <td className="px-4 py-3">{a.exam?.title}</td>
+                  <td className="px-4 py-3 font-medium text-zinc-100">
                     {a.score !== null ? `${a.score}` : "—"}
                   </td>
-                  <td className="p-3">
+                  <td className="px-4 py-3">
                     <span
-                      className={`px-2 py-1 rounded text-xs ${
+                      className={`px-2 py-0.5 rounded-full text-xs font-medium ${
                         a.status === "GRADED"
-                          ? "bg-green-600/30 text-green-400"
+                          ? "bg-green-500/20 text-green-300"
                           : a.status === "SUBMITTED"
-                          ? "bg-yellow-600/30 text-yellow-400"
-                          : "bg-gray-700/50 text-gray-400"
+                          ? "bg-yellow-500/20 text-yellow-300"
+                          : "bg-zinc-700/50 text-zinc-300"
                       }`}
                     >
                       {a.status}
                     </span>
                   </td>
-                  <td className="p-3 text-gray-400">
+                  <td className="px-4 py-3">
                     {a.submittedAt
                       ? new Date(a.submittedAt).toLocaleString()
                       : "—"}
                   </td>
-                  <td className="p-3 flex justify-center gap-2">
-                    <button
-                      onClick={() => fetchAttemptDetail(a.id)}
-                      className="text-purple-400 hover:text-purple-500"
-                    >
-                      <Eye size={17} />
-                    </button>
-                    {a.status === "SUBMITTED" && (
+                  <td className="px-4 py-3">
+                    <div className="flex justify-center gap-3">
                       <button
                         onClick={() => fetchAttemptDetail(a.id)}
-                        className="text-green-400 hover:text-green-500"
+                        className="text-purple-400 hover:text-purple-300 transition-colors"
+                        title="Ver detalle"
                       >
-                        <Edit3 size={17} />
+                        <Eye size={17} />
                       </button>
-                    )}
-                    {a.status === "GRADED" && (
-                      <CheckCircle size={17} className="text-green-500" />
-                    )}
-                    {a.status === "IN_PROGRESS" && (
-                      <XCircle size={17} className="text-gray-500" />
-                    )}
+                      {a.status === "SUBMITTED" && (
+                        <button
+                          onClick={() => fetchAttemptDetail(a.id)}
+                          className="text-green-400 hover:text-green-300 transition-colors"
+                          title="Calificar"
+                        >
+                          <Edit3 size={17} />
+                        </button>
+                      )}
+                      {a.status === "GRADED" && (
+                        <CheckCircle
+                          size={17}
+                          className="text-green-500"
+                          title="Calificado"
+                        />
+                      )}
+                      {a.status === "IN_PROGRESS" && (
+                        <XCircle
+                          size={17}
+                          className="text-zinc-500"
+                          title="En Progreso"
+                        />
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

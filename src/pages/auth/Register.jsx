@@ -19,45 +19,64 @@ export default function Register() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div>
-        <label className="text-sm">Nombre</label>
-        <input
-          className="mt-1 w-full rounded-lg bg-transparent border border-qt-border p-2"
-          placeholder="Tu nombre"
-          {...reg("name", { required: true })}
-        />
-      </div>
-      <div>
-        <label className="text-sm">Email</label>
-        <input
-          className="mt-1 w-full rounded-lg bg-transparent border border-qt-border p-2"
-          type="email"
-          placeholder="correo@ejemplo.com"
-          {...reg("email", { required: true })}
-        />
-      </div>
-      <div>
-        <label className="text-sm">Contraseña</label>
-        <input
-          className="mt-1 w-full rounded-lg bg-transparent border border-qt-border p-2"
-          type="password"
-          placeholder="********"
-          {...reg("password", { required: true, minLength: 6 })}
-        />
-      </div>
-      <button
-        disabled={loading}
-        className="w-full rounded-lg bg-qt-primary hover:opacity-90 transition p-2 font-semibold"
-      >
-        {loading ? "Creando cuenta..." : "Crear cuenta"}
-      </button>
-      <p className="text-center text-sm text-qt-muted">
+    <>
+      <h2 className="text-white text-3xl font-bold text-center mb-8">
+        Crear Cuenta
+      </h2>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        <div>
+          <label className="block text-sm font-medium text-gray-400 mb-2">
+            Nombre
+          </label>
+          <input
+            className="w-full p-3 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            placeholder="Tu nombre"
+            {...reg("name", { required: true })}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-400 mb-2">
+            Correo electrónico
+          </label>
+          <input
+            className="w-full p-3 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            type="email"
+            placeholder="correo@ejemplo.com"
+            {...reg("email", { required: true })}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-400 mb-2">
+            Contraseña
+          </label>
+          <input
+            className="w-full p-3 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            type="password"
+            placeholder="••••••"
+            {...reg("password", { required: true, minLength: 6 })}
+          />
+        </div>
+
+        <button
+          disabled={loading}
+          className="w-full p-3 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+        >
+          {loading ? "Creando cuenta..." : "Crear cuenta"}
+        </button>
+      </form>
+
+      <p className="text-center text-sm text-gray-400 mt-6">
         ¿Ya tienes cuenta?{" "}
-        <a className="text-qt-accent" href="/login">
+        <a
+          className="font-medium text-purple-400 hover:underline"
+          href="/login"
+        >
           Inicia sesión
         </a>
       </p>
-    </form>
+    </>
   );
 }

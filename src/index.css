@@ -1,11 +1,42 @@
+/* En tu index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  color-scheme: dark;
-}
+@layer base {
+  :root {
+    /* MODO CLARO (Según tu nueva imagen) */
+    --background: #f9f9f9; /* Fondo gris claro */
+    --panel: #ffffff; /* Barra lateral blanca */
+    --card: #111114; /* Tarjetas oscuras */
+    --border: #e0e0e0; /* Borde claro (para sidebar) */
+    --card-border: #3f3f46; /* Borde oscuro (para tarjetas) */
 
-body {
-  @apply bg-qt-bg text-qt-text;
+    --text-primary: #111114; /* Texto principal (oscuro) */
+    --text-muted: #52525b; /* Texto secundario (oscuro) */
+
+    --text-inverted: #e4e4e7; /* Texto sobre tarjetas (claro) */
+    --text-muted-inverted: #a1a1aa; /* Texto sec. sobre tarjetas (claro) */
+
+    --accent-start: #7c3aed;
+    --accent-end: #0ea5e9;
+  }
+
+  .dark {
+    /* MODO OSCURO (Como estaba) */
+    --background: #0c0c0d;
+    --panel: #111114;
+    --card: #111114;
+    --border: #3f3f46;
+    --card-border: #3f3f46;
+
+    --text-primary: #e4e4e7;
+    --text-muted: #a1a1aa;
+
+    --text-inverted: #e4e4e7;
+    --text-muted-inverted: #a1a1aa;
+
+    --accent-start: #7c3aed;
+    --accent-end: #22d3ee;
+  }
 }
