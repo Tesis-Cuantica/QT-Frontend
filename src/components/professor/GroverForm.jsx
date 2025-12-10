@@ -23,7 +23,7 @@ export default function GroverForm({ onResult, onError }) {
     }
 
     if (!/^[01]+$/.test(markedState)) {
-      onError(" Estado objetivo debe contener solo '0' y '1'.");
+      onError("Estado objetivo debe contener solo '0' y '1'.");
       return;
     }
 
@@ -56,9 +56,12 @@ export default function GroverForm({ onResult, onError }) {
         padding: "2rem",
         borderRadius: "8px",
         boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
+        color: "#000", // ✅ Texto principal en negro
       }}
     >
-      <h2>🔍 Ejecutar algoritmo de Grover</h2>
+      <h2 style={{ color: "#000", margin: "0 0 1.5rem 0" }}>
+        Ejecutar algoritmo de Grover
+      </h2>
 
       <div
         style={{
@@ -69,7 +72,13 @@ export default function GroverForm({ onResult, onError }) {
         }}
       >
         <div>
-          <label style={{ display: "block", marginBottom: "0.25rem" }}>
+          <label
+            style={{
+              display: "block",
+              marginBottom: "0.25rem",
+              color: "#000", // ✅ Etiqueta en negro
+            }}
+          >
             Qubits (2–8)
           </label>
           <select
@@ -84,10 +93,12 @@ export default function GroverForm({ onResult, onError }) {
               padding: "0.5rem",
               border: "1px solid #ced4da",
               borderRadius: "4px",
+              color: "#000", // ✅ Texto dentro del select
+              backgroundColor: "white",
             }}
           >
             {[2, 3, 4, 5, 6, 7, 8].map((n) => (
-              <option key={n} value={n}>
+              <option key={n} value={n} style={{ color: "#000" }}>
                 n = {n} (espacio: {2 ** n})
               </option>
             ))}
@@ -95,7 +106,13 @@ export default function GroverForm({ onResult, onError }) {
         </div>
 
         <div>
-          <label style={{ display: "block", marginBottom: "0.25rem" }}>
+          <label
+            style={{
+              display: "block",
+              marginBottom: "0.25rem",
+              color: "#000",
+            }}
+          >
             Estado objetivo ({nQubits} bits)
           </label>
           <input
@@ -108,12 +125,20 @@ export default function GroverForm({ onResult, onError }) {
               padding: "0.5rem",
               border: "1px solid #ced4da",
               borderRadius: "4px",
+              color: "#000", // ✅ Texto del input
+              backgroundColor: "white",
             }}
           />
         </div>
 
         <div>
-          <label style={{ display: "block", marginBottom: "0.25rem" }}>
+          <label
+            style={{
+              display: "block",
+              marginBottom: "0.25rem",
+              color: "#000",
+            }}
+          >
             Iteraciones (óptimo: {optimalIterations})
           </label>
           <input
@@ -127,12 +152,14 @@ export default function GroverForm({ onResult, onError }) {
               padding: "0.5rem",
               border: "1px solid #ced4da",
               borderRadius: "4px",
+              color: "#000",
+              backgroundColor: "white",
             }}
           />
           <div
             style={{
               fontSize: "0.85rem",
-              color: "#6c757d",
+              color: "#6c757d", // ✅ Este sigue siendo gris suave (ayuda visual)
               marginTop: "0.25rem",
             }}
           >
@@ -148,7 +175,7 @@ export default function GroverForm({ onResult, onError }) {
           padding: "0.75rem 2rem",
           fontSize: "1.1rem",
           backgroundColor: "#007bff",
-          color: "white",
+          color: "white", // ✅ Texto del botón sigue siendo blanco (contraste adecuado)
           border: "none",
           borderRadius: "6px",
           cursor: loading ? "not-allowed" : "pointer",
