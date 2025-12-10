@@ -41,6 +41,7 @@ export default function ProfessorLayout() {
           <p className="text-xs text-zinc-500 mt-1">{user?.name}</p>
         </div>
 
+        {/* MENU LATERAL COMPLETO */}
         <nav className="flex-1 p-3 space-y-2">
           <NavLink
             to="/professor"
@@ -81,6 +82,17 @@ export default function ProfessorLayout() {
             onClick={() => setIsSidebarOpen(false)}
           >
             <Cpu size={18} /> Diseñador Cuántico
+          </NavLink>
+
+          {/* NUEVA SECCIÓN AÑADIDA */}
+          <NavLink
+            to="/professor/algorithms"
+            className={({ isActive }) =>
+              `${navItem} ${isActive ? active : inactive}`
+            }
+            onClick={() => setIsSidebarOpen(false)}
+          >
+            <Cpu size={18} /> Algoritmos Cuánticos
           </NavLink>
         </nav>
 
