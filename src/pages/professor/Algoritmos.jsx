@@ -29,7 +29,7 @@ function Algoritmos() {
           boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
         }}
       >
-        <h1>🔐 Servicio Cuántico: Algoritmo de Grover</h1>
+        <h1>Servicio Cuántico: Algoritmo de Grover</h1>
         <p style={{ fontSize: "1.2rem", opacity: 0.9 }}>
           Demostración local de aceleración cuántica para ciberseguridad
         </p>
@@ -43,7 +43,7 @@ function Algoritmos() {
             marginTop: "0.5rem",
           }}
         >
-          ✅ Sin cuenta externa • 100% local • Qiskit 1.3+
+          Qiskit 1.3+
         </div>
       </header>
 
@@ -70,20 +70,6 @@ function Algoritmos() {
           <SecurityInsights nQubits={result.input.n_qubits} />
         </>
       )}
-
-      <footer
-        style={{
-          marginTop: "3rem",
-          textAlign: "center",
-          color: "#6c757d",
-          fontSize: "0.9rem",
-          borderTop: "1px solid #eee",
-          paddingTop: "1rem",
-        }}
-      >
-        <p>Microservicio cuántico local • {new Date().getFullYear()}</p>
-        <p>Basado en Qiskit • Algoritmo de Grover para búsqueda acelerada</p>
-      </footer>
     </div>
   );
 }

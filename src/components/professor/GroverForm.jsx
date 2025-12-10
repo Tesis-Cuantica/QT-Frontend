@@ -155,7 +155,7 @@ export default function GroverForm({ onResult, onError }) {
           opacity: loading ? 0.8 : 1,
         }}
       >
-        {loading ? "Ejecutando..." : "🚀 Ejecutar Grover"}
+        {loading ? "Ejecutando..." : "Ejecutar Grover"}
       </button>
     </form>
   );

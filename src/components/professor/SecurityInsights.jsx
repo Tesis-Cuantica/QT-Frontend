@@ -57,7 +57,7 @@ export default function SecurityInsights({ nQubits }) {
         padding: "1.5rem",
       }}
     >
-      <h3>🔐 Impacto en ciberseguridad</h3>
+      <h3>Impacto en ciberseguridad</h3>
 
       <div
         style={{
@@ -117,7 +117,7 @@ export default function SecurityInsights({ nQubits }) {
             borderRadius: "4px",
           }}
         >
-          <strong>🛡️ Mitigación:</strong> {scenario.mitigation}
+          <strong>Mitigación:</strong> {scenario.mitigation}
         </div>
       </div>
 

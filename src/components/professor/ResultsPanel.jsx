@@ -44,7 +44,7 @@ export default function ResultsPanel({ result }) {
         boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
       }}
     >
-      <h3>📊 Resultados del algoritmo de Grover</h3>
+      <h3>Resultados del algoritmo de Grover</h3>
 
       {/* Métricas clave */}
       <div
@@ -57,7 +57,7 @@ export default function ResultsPanel({ result }) {
       >
         <MetricCard
           title="Éxito"
-          value={is_success ? "✅ Sí" : "❌ No"}
+          value={is_success ? "Sí" : "No"}
           color={is_success ? "#28a745" : "#dc3545"}
         />
         <MetricCard
@@ -114,7 +114,7 @@ export default function ResultsPanel({ result }) {
 
       {/* Tabla detallada */}
       <div>
-        <h4>🔍 Detalle de mediciones</h4>
+        <h4>Detalle de mediciones</h4>
         <table
           style={{
             width: "100%",
