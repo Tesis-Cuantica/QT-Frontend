@@ -1,3 +1,4 @@
+// ⬇️ ESTE ES TU ARCHIVO PRINCIPAL REAL
 import { Routes, Route, Navigate } from "react-router-dom";
 import AuthLayout from "@/layouts/AuthLayout";
 import AdminLayout from "@/layouts/AdminLayout";
@@ -6,7 +7,6 @@ import StudentLayout from "@/layouts/StudentLayout";
 
 import Login from "@/pages/auth/Login";
 import Register from "@/pages/auth/Register";
-
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import UsersPage from "@/pages/admin/UsersPage";
 import CoursesPage from "@/pages/admin/CoursesPage";
@@ -21,7 +21,7 @@ import ExamDetailPage from "@/pages/professor/ExamDetailPage";
 import ModuleAttemptsPage from "@/pages/professor/ModuleAttemptsPage";
 import QuantumLabDesigner from "@/pages/professor/QuantumLabDesigner";
 import ProfessorReportsPage from "@/pages/professor/ProfessorReportsPage";
-import Algoritmos from "@/pages/professor/Algoritmos"; // <- NUEVA PÁGINA
+import Algoritmos from "@/pages/professor/Algoritmos";
 
 import StudentDashboard from "@/pages/student/StudentDashboard";
 import StudentCoursesPage from "@/pages/student/StudentCoursesPage";
@@ -32,8 +32,8 @@ import StudentExamsPage from "@/pages/student/StudentExamsPage";
 import StudentExamDetailPage from "@/pages/student/StudentExamDetailPage";
 import StudentAttemptsPage from "@/pages/student/StudentAttemptsPage";
 import StudentReportsPage from "@/pages/student/StudentReportsPage";
-import NotFound from "@/pages/common/NotFound";
 
+import NotFound from "@/pages/common/NotFound";
 import Protected from "@/components/common/Protected";
 import RoleGuard from "@/components/common/RoleGuard";
 
@@ -87,7 +87,7 @@ export default function App() {
         <Route path="exams/:examId" element={<ExamDetailPage />} />
         <Route path="attempts" element={<ModuleAttemptsPage />} />
         <Route path="lab-designer" element={<QuantumLabDesigner />} />
-        <Route path="algorithms" element={<Algoritmos />} /> {/* NUEVA RUTA */}
+        <Route path="algorithms" element={<Algoritmos />} />
       </Route>
 
       <Route

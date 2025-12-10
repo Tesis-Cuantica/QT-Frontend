@@ -88,4 +88,4 @@ function Algoritmos() {
   );
 }
 
-export default App;
+export default Algoritmos;
