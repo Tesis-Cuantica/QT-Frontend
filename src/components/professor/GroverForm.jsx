@@ -1,6 +1,6 @@
 // frontend/src/components/GroverForm.jsx
 import { useState } from "react";
-import { runGrover } from "../services/quantumApi";
+import { runGrover } from "../../services/quantumApi";
 
 export default function GroverForm({ onResult, onError }) {
   const [nQubits, setNQubits] = useState(3);
