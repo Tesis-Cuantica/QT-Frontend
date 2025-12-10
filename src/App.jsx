@@ -21,6 +21,7 @@ import ExamDetailPage from "@/pages/professor/ExamDetailPage";
 import ModuleAttemptsPage from "@/pages/professor/ModuleAttemptsPage";
 import QuantumLabDesigner from "@/pages/professor/QuantumLabDesigner";
 import ProfessorReportsPage from "@/pages/professor/ProfessorReportsPage";
+import QuantumAlgorithmsPage from "@/pages/professor/QuantumAlgorithmsPage"; // <- NUEVA PÁGINA
 
 import StudentDashboard from "@/pages/student/StudentDashboard";
 import StudentCoursesPage from "@/pages/student/StudentCoursesPage";
@@ -86,6 +87,8 @@ export default function App() {
         <Route path="exams/:examId" element={<ExamDetailPage />} />
         <Route path="attempts" element={<ModuleAttemptsPage />} />
         <Route path="lab-designer" element={<QuantumLabDesigner />} />
+        <Route path="algorithms" element={<QuantumAlgorithmsPage />} />{" "}
+        {/* NUEVA RUTA */}
       </Route>
 
       <Route
