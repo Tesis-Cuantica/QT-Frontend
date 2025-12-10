@@ -42,9 +42,12 @@ export default function ResultsPanel({ result }) {
         borderRadius: "8px",
         padding: "1.5rem",
         boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+        color: "#000", // ✅ Texto principal del panel en negro
       }}
     >
-      <h3>Resultados del algoritmo de Grover</h3>
+      <h3 style={{ color: "#000", margin: "0 0 1.5rem 0" }}>
+        Resultados del algoritmo de Grover
+      </h3>
 
       {/* Métricas clave */}
       <div
@@ -92,7 +95,9 @@ export default function ResultsPanel({ result }) {
         }}
       >
         <div>
-          <h4>Distribución de resultados</h4>
+          <h4 style={{ color: "#000", margin: "0 0 0.5rem 0" }}>
+            Distribución de resultados
+          </h4>
           <ProbabilityChart
             counts={counts}
             markedState={marked_state}
@@ -100,12 +105,20 @@ export default function ResultsPanel({ result }) {
           />
         </div>
         <div>
-          <h4>Comparativa: Clásico vs Cuántico</h4>
+          <h4 style={{ color: "#000", margin: "0 0 0.5rem 0" }}>
+            Comparativa: Clásico vs Cuántico
+          </h4>
           <ComparisonChart
             nQubits={n_qubits}
             groverAttempts={iterations_used}
           />
-          <p style={{ fontSize: "0.9rem", color: "#666", marginTop: "0.5rem" }}>
+          <p
+            style={{
+              fontSize: "0.9rem",
+              color: "#666", // ✅ Información secundaria en gris (mejor jerarquía)
+              marginTop: "0.5rem",
+            }}
+          >
             Espacio: {space_size} elementos | Clásico: ~{classical_equivalent}{" "}
             intentos
           </p>
@@ -114,12 +127,15 @@ export default function ResultsPanel({ result }) {
 
       {/* Tabla detallada */}
       <div>
-        <h4>Detalle de mediciones</h4>
+        <h4 style={{ color: "#000", margin: "1rem 0 0.5rem 0" }}>
+          Detalle de mediciones
+        </h4>
         <table
           style={{
             width: "100%",
             borderCollapse: "collapse",
             marginTop: "0.5rem",
+            color: "#000", // ✅ Texto de la tabla en negro
           }}
         >
           <thead>
@@ -129,6 +145,8 @@ export default function ResultsPanel({ result }) {
                   padding: "0.5rem",
                   textAlign: "left",
                   borderBottom: "2px solid #dee2e6",
+                  color: "#000",
+                  fontWeight: "bold",
                 }}
               >
                 Estado
@@ -138,6 +156,8 @@ export default function ResultsPanel({ result }) {
                   padding: "0.5rem",
                   textAlign: "right",
                   borderBottom: "2px solid #dee2e6",
+                  color: "#000",
+                  fontWeight: "bold",
                 }}
               >
                 Frecuencia
@@ -147,6 +167,8 @@ export default function ResultsPanel({ result }) {
                   padding: "0.5rem",
                   textAlign: "right",
                   borderBottom: "2px solid #dee2e6",
+                  color: "#000",
+                  fontWeight: "bold",
                 }}
               >
                 Probabilidad
@@ -167,19 +189,31 @@ export default function ResultsPanel({ result }) {
                   }}
                 >
                   <td
-                    style={{ padding: "0.5rem", border: "1px solid #dee2e6" }}
+                    style={{
+                      padding: "0.5rem",
+                      border: "1px solid #dee2e6",
+                      color: "#000",
+                    }}
                   >
                     {state}
-                    {state === marked_state && " ← objetivo"}
+                    {state === marked_state && (
+                      <span style={{ color: "#0056b3", fontWeight: "bold" }}>
+                        {" ← objetivo"}
+                      </span>
+                    )}
                     {state === most_frequent_measurement &&
-                      state !== marked_state &&
-                      " ← más frecuente"}
+                      state !== marked_state && (
+                        <span style={{ color: "#856404", fontWeight: "bold" }}>
+                          {" ← más frecuente"}
+                        </span>
+                      )}
                   </td>
                   <td
                     style={{
                       padding: "0.5rem",
                       textAlign: "right",
                       border: "1px solid #dee2e6",
+                      color: "#000",
                     }}
                   >
                     {freq}
@@ -189,6 +223,7 @@ export default function ResultsPanel({ result }) {
                       padding: "0.5rem",
                       textAlign: "right",
                       border: "1px solid #dee2e6",
+                      color: "#000",
                     }}
                   >
                     {((freq / shots) * 100).toFixed(1)}%
@@ -214,14 +249,20 @@ function MetricCard({ title, value, subtitle, color = "#007bff" }) {
       }}
     >
       <div style={{ fontSize: "0.85rem", color: "#6c757d" }}>{title}</div>
-      <div style={{ fontSize: "1.5rem", fontWeight: "bold", color }}>
+      <div
+        style={{
+          fontSize: "1.5rem",
+          fontWeight: "bold",
+          color: color, // ✅ Valor destacado con color semántico (no negro)
+        }}
+      >
         {value}
       </div>
       {subtitle && (
         <div
           style={{
             fontSize: "0.75rem",
-            color: "#6c757d",
+            color: "#6c757d", // ✅ Subtítulo informativo en gris (profesional)
             marginTop: "0.25rem",
           }}
         >
